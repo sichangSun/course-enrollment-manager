@@ -1,1 +1,1 @@
-# CourseEnrollment-manager
+# course-enrollment-manager
