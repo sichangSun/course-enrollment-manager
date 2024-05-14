@@ -1,0 +1,28 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/frontend/Dockerfile
+    container_name: frontend
+    working_dir: /app
+    # volumes:
+    # # マウント先の変更
+    #   - ./frontend:/app
+    ports:
+      - "5173:5173"
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+
+  db:
+    image: mysql:8.0
+    env_file:
+      - docker-compose.env
+
