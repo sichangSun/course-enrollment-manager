@@ -25,4 +25,12 @@ services:
     image: mysql:8.0
     env_file:
       - docker-compose.env
+    ports:
+      - "3300:3306"
+    volumes:
+      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./mysql/mysql.conf:/etc/mysql/conf.d/my.cnf
+      - db-volume:/var/lib/mysql
 
+volumes:
+  db-volume:
