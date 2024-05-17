@@ -53,6 +53,7 @@ func New(conf *RouterConfig) *Router {
 		{
 			g3 := g.Group("/courses")
 			g3.GET("", courseController.GetAllCourses)
+			g3.GET("/:id", courseController.GetOneCourseDetail)
 		}
 	}
 
