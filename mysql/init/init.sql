@@ -40,8 +40,7 @@ CREATE TABLE course_schedules (
 
 -- init data
 INSERT INTO students (`name`,`password`,email) VALUES
-("杉木太郎","KRhjh439jsc","suzuki@scon.com"),
-("佐藤紗里"," SC903h4hq","satou@scon.com");
+("鈴木太郎","$2a$10$Wd3u8SEBuT4UQ3IyEOFX5OHZjcgV8N9SrnR9N2mhyZcJNylHhfAXO","suzuki@scon.com");
 
 INSERT INTO teachers (`name`,position) VALUES
 ("飯田涼","准教授"),
