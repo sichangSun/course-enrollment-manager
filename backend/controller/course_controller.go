@@ -65,7 +65,7 @@ func (con *CourseController) GetOneCourseDetail(c echo.Context) error {
 	if err != nil {
 		c.Logger().Error(err.Error())
 		if errors.Is(err, service.ErrNotFound) {
-			return c.NoContent(http.StatusNotFound)
+			return c.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
 		}
 		return c.NoContent(http.StatusInternalServerError)
 	}

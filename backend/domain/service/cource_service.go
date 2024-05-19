@@ -8,7 +8,7 @@ import (
 	"github.com/sichangSun/course-enrollment-manager/domain/repository"
 )
 
-var ErrNotFound = errors.New("no course found")
+var ErrNotFound = errors.New("course not found")
 
 // CourseService ...
 type CourseService struct {

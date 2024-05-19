@@ -10,6 +10,6 @@ import (
 type CourseRepository interface {
 	// GetAllCourses ...
 	GetAllCourses(ctx context.Context) ([]*model.CourseScheduleDetail, error)
-	//GetGetOneCourseDetail
+	// GetGetOneCourseDetail
 	GetGetOneCourseDetail(ctx context.Context, courseID int) ([]*model.CourseScheduleDetail, error)
 }
