@@ -109,3 +109,15 @@ func (s *StudentRepository) RegisterCourse(ctx context.Context, sc *model.Studen
 	}
 	return nil
 }
+
+// UnRegisterCourse
+func (s *StudentRepository) UnRegisterCourse(ctx context.Context, sc *model.StudentCourse) error {
+	query := `DELETE FROM students_courses
+		WHERE student_id = :student_id AND course_id = :course_id`
+
+	_, err := s.db.NamedExecContext(ctx, query, sc)
+	if err != nil {
+		log.Fatalf("Error querying the database: %v", err)
+	}
+	return nil
+}

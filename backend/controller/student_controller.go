@@ -165,3 +165,32 @@ func (con *StudentController) RegisterCourse(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, map[string]string{"message": "successful"})
 }
+
+// UnregisterCourse
+func (con *StudentController) UnRegisterCourse(c echo.Context) error {
+	ctx := c.Request().Context()
+	claims, err := session.ValidateToken(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
+	}
+	studentID, err := strconv.Atoi(claims.ID)
+	if err != nil {
+		c.Logger().Error(err.Error())
+		return c.NoContent(http.StatusBadRequest)
+	}
+	ID := c.Param("course_id")
+	courseID, err := strconv.Atoi(ID)
+	if err != nil {
+		c.Logger().Error(err.Error())
+		return c.NoContent(http.StatusBadRequest)
+	}
+	in := &service.UnRegisterCourseInput{
+		StudentID: studentID,
+		CourseID:  courseID,
+	}
+	err = con.StudentService.UnRegisterCourse(ctx, in)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	return c.JSON(http.StatusOK, map[string]string{"message": "successful"})
+}

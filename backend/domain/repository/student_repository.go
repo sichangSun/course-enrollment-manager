@@ -20,4 +20,6 @@ type StudentRepository interface {
 	GetStudentCourses(ctx context.Context, studentID int) ([]*model.StudentCoursesDetail, error)
 	// RegisterCourse
 	RegisterCourse(ctx context.Context, sc *model.StudentCourse) error
+	// UnRegisterCourse
+	UnRegisterCourse(ctx context.Context, sc *model.StudentCourse) error
 }

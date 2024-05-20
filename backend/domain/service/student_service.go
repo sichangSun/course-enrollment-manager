@@ -48,6 +48,11 @@ type RegisterCourseInput struct {
 	CourseID  int
 }
 
+type UnRegisterCourseInput struct {
+	StudentID int
+	CourseID  int
+}
+
 // Loginin
 func (s *StudentService) Login(ctx context.Context, input *LoginInput) (*LoginOutput, error) {
 	if err := validator.New().Struct(input); err != nil {
@@ -144,6 +149,19 @@ func (s *StudentService) RegisterCourse(ctx context.Context, input *RegisterCour
 		CourseID:  input.CourseID,
 	}
 	err := s.StudentRepository.RegisterCourse(ctx, studentCourse)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// UnRegisterCourse
+func (s *StudentService) UnRegisterCourse(ctx context.Context, input *UnRegisterCourseInput) error {
+	studentCourse := &model.StudentCourse{
+		StudentID: input.StudentID,
+		CourseID:  input.CourseID,
+	}
+	err := s.StudentRepository.UnRegisterCourse(ctx, studentCourse)
 	if err != nil {
 		return err
 	}

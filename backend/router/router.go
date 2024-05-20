@@ -54,6 +54,7 @@ func New(conf *RouterConfig) *Router {
 			g1.PUT("/change-password", studentController.ChangePassword)
 			g1.GET("/courses", studentController.GetStudentCourses)
 			g1.POST("/course", studentController.RegisterCourse)
+			g1.DELETE("/course/:course_id", studentController.UnRegisterCourse)
 
 		}
 		{
@@ -64,7 +65,7 @@ func New(conf *RouterConfig) *Router {
 			g3 := g.Group("/courses")
 
 			g3.GET("", courseController.GetAllCourses)
-			g3.GET("/:id", courseController.GetOneCourseDetail)
+			g3.GET("/:course_id", courseController.GetOneCourseDetail)
 		}
 	}
 
