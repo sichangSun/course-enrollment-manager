@@ -2,8 +2,8 @@ package controller
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sichangSun/course-enrollment-manager/domain/repository"
@@ -39,7 +39,7 @@ func (con *StudentController) Login(c echo.Context) error {
 		Password: params.Password,
 	}
 	out, err := con.StudentService.Login(ctx, in)
-	fmt.Println(err)
+
 	if err != nil {
 		if errors.Is(err, repository.ErrStudentNotFound) {
 			return c.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
@@ -54,4 +54,44 @@ func (con *StudentController) Login(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	return c.JSON(http.StatusOK, map[string]string{"token": token})
+}
+
+// ChangePassword
+func (con *StudentController) ChangePassword(c echo.Context) error {
+	ctx := c.Request().Context()
+	claims, err := session.ValidateToken(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
+	}
+	studentID, err := strconv.Atoi(claims.ID)
+	if err != nil {
+		c.Logger().Error(err.Error())
+		return c.NoContent(http.StatusBadRequest)
+	}
+	params := struct {
+		OldPassword string `json:"oldpassword"`
+		NewPassword string `json:"newpassword"`
+	}{}
+	if err := c.Bind(&params); err != nil {
+		c.Logger().Error(err.Error())
+		return c.NoContent(http.StatusBadRequest)
+	}
+	in := &service.UpdatePasswordInput{
+		StudentID:   studentID,
+		OldPassword: params.OldPassword,
+		NewPassword: params.NewPassword,
+	}
+	err = con.StudentService.UpdatePassword(ctx, in)
+	if err != nil {
+		if errors.Is(err, repository.ErrStudentNotFound) {
+			return c.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
+		}
+		if errors.Is(err, service.ErrInvalidPassword) {
+			return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
+		}
+		c.Logger().Error(err.Error())
+		return c.NoContent(http.StatusInternalServerError)
+	}
+	return c.JSON(http.StatusOK, map[string]string{"message": "successful"})
+
 }
