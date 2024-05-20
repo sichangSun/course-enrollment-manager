@@ -42,6 +42,12 @@ type GetStudentCoursesOutput struct {
 	StudentCourses []*model.StudentCoursesWithMulitSchedules
 }
 
+// RegisterCourseInput
+type RegisterCourseInput struct {
+	StudentID int
+	CourseID  int
+}
+
 // Loginin
 func (s *StudentService) Login(ctx context.Context, input *LoginInput) (*LoginOutput, error) {
 	if err := validator.New().Struct(input); err != nil {
@@ -129,4 +135,17 @@ func (s *StudentService) GetStudentCourses(ctx context.Context, studentID int) (
 	}
 	return &GetStudentCoursesOutput{StudentCourses: courses}, nil
 
+}
+
+// RegisterCourse
+func (s *StudentService) RegisterCourse(ctx context.Context, input *RegisterCourseInput) error {
+	studentCourse := &model.StudentCourse{
+		StudentID: input.StudentID,
+		CourseID:  input.CourseID,
+	}
+	err := s.StudentRepository.RegisterCourse(ctx, studentCourse)
+	if err != nil {
+		return err
+	}
+	return nil
 }

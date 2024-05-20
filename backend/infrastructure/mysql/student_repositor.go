@@ -96,3 +96,16 @@ func (s *StudentRepository) GetStudentCourses(ctx context.Context, studentID int
 
 	return courses, nil
 }
+
+// RegisterCourse
+func (s *StudentRepository) RegisterCourse(ctx context.Context, sc *model.StudentCourse) error {
+	query := `INSERT INTO students_courses
+		(student_id, course_id) VALUES
+		(:student_id, :course_id);`
+
+	_, err := s.db.NamedExecContext(ctx, query, sc)
+	if err != nil {
+		log.Fatalf("Error querying the database: %v", err)
+	}
+	return nil
+}

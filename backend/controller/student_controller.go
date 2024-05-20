@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+
 	"net/http"
 	"strconv"
 
@@ -126,4 +127,41 @@ func (con *StudentController) GetStudentCourses(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, res)
 
+}
+
+// RegisterCourse
+func (con *StudentController) RegisterCourse(c echo.Context) error {
+	ctx := c.Request().Context()
+	claims, err := session.ValidateToken(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
+	}
+	studentID, err := strconv.Atoi(claims.ID)
+	if err != nil {
+		c.Logger().Error(err.Error())
+		return c.NoContent(http.StatusBadRequest)
+	}
+	params := struct {
+		CourseID   string `json:"courseid"`
+		CourseName string `json:"coursename"`
+	}{}
+	if err := c.Bind(&params); err != nil {
+		c.Logger().Error(err.Error())
+		return c.NoContent(http.StatusBadRequest)
+	}
+	couserID, err := strconv.Atoi(params.CourseID)
+	if err != nil {
+		c.Logger().Error(err.Error())
+		return c.NoContent(http.StatusBadRequest)
+	}
+	in := service.RegisterCourseInput{
+		StudentID: studentID,
+		CourseID:  couserID,
+	}
+
+	err = con.StudentService.RegisterCourse(ctx, &in)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+	return c.JSON(http.StatusOK, map[string]string{"message": "successful"})
 }
