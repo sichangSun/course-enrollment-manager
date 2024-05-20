@@ -35,3 +35,18 @@ func CreateToken(ctx echo.Context, student *model.Student) (string, error) {
 	}
 	return t, nil
 }
+
+// ValidateToken
+func ValidateToken(c echo.Context) (*AccountClaims, error) {
+	token, ok := c.Get("user").(*jwt.Token)
+	if !ok {
+		return nil, errors.New("invalid token")
+	}
+
+	claims, ok := token.Claims.(*AccountClaims)
+	if !ok || !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+
+	return claims, nil
+}
