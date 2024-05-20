@@ -1,12 +1,14 @@
-FROM golang:1.17.0-alpine3.13 AS builder
+FROM golang:1.22.3-alpine3.19 AS builder
 
 WORKDIR /app
 
-COPY ./backend/main.go ./
+COPY ./backend/ ./
+
+RUN go mod tidy
 
 RUN go build -o main main.go
 
-FROM alpine:3.13
+FROM alpine:3.19
 
 WORKDIR /app
 
