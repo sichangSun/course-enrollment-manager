@@ -37,6 +37,11 @@ type UpdatePasswordInput struct {
 	NewPassword string `validate:"required,min=8,max=20"`
 }
 
+// GetStudentCoursesOutput
+type GetStudentCoursesOutput struct {
+	StudentCourses []*model.StudentCoursesWithMulitSchedules
+}
+
 // Loginin
 func (s *StudentService) Login(ctx context.Context, input *LoginInput) (*LoginOutput, error) {
 	if err := validator.New().Struct(input); err != nil {
@@ -81,4 +86,47 @@ func (s *StudentService) UpdatePassword(ctx context.Context, input *UpdatePasswo
 	}
 
 	return nil
+}
+
+// GetStudentCourses
+func (s *StudentService) GetStudentCourses(ctx context.Context, studentID int) (*GetStudentCoursesOutput, error) {
+	rows, err := s.StudentRepository.GetStudentCourses(ctx, studentID)
+	if len(rows) == 0 {
+		return nil, ErrNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+	courseMap := make(map[int]*model.StudentCoursesWithMulitSchedules)
+	for _, detail := range rows {
+		if course, exists := courseMap[detail.CourseID]; exists {
+			course.Schedules = append(course.Schedules, &model.CourseSchedule{
+				DayOfWeek: detail.DayOfWeek,
+				Period:    detail.Period,
+			})
+		} else {
+			courseMap[detail.CourseID] = &model.StudentCoursesWithMulitSchedules{
+				StudentID:    detail.StudentID,
+				CourseID:     detail.CourseID,
+				CourseName:   detail.CourseName,
+				Semester:     detail.Semester,
+				InstructorID: detail.Instructor,
+				Credits:      detail.Credits,
+				TeacherName:  detail.TeacherName,
+				Position:     detail.Position,
+				Schedules: []*model.CourseSchedule{
+					{
+						DayOfWeek: detail.DayOfWeek,
+						Period:    detail.Period,
+					},
+				},
+			}
+		}
+	}
+	var courses []*model.StudentCoursesWithMulitSchedules
+	for _, course := range courseMap {
+		courses = append(courses, course)
+	}
+	return &GetStudentCoursesOutput{StudentCourses: courses}, nil
+
 }

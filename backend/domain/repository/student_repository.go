@@ -16,4 +16,6 @@ type StudentRepository interface {
 	GetStudentByID(ctx context.Context, ID int) (*model.Student, error)
 	// UpdatePassword
 	UpdatePassword(ctx context.Context, stu *model.Student) error
+	//GetStudentCourses
+	GetStudentCourses(ctx context.Context, studentID int) ([]*model.StudentCoursesDetail, error)
 }

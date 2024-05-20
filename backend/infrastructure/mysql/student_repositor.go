@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/sichangSun/course-enrollment-manager/domain/model"
@@ -65,4 +66,33 @@ func (s *StudentRepository) UpdatePassword(ctx context.Context, stu *model.Stude
 	}
 	return nil
 
+}
+
+// GetStudentCourses
+func (s *StudentRepository) GetStudentCourses(ctx context.Context, studentID int) ([]*model.StudentCoursesDetail, error) {
+	query := `
+	SELECT
+		stu.id AS student_id,
+		c.id AS course_id,
+		c.name AS course_name,
+		c.semester,
+		c.instructor,
+		c.credits,
+		t.name AS teacher_name,
+		t.position,
+		cs.day_of_week,
+		cs.period
+	FROM students stu
+	JOIN students_courses sc ON stu.id = sc.student_id
+	JOIN courses c ON sc.course_id = c.id
+	JOIN teachers t ON c.instructor = t.id
+	JOIN course_schedules cs ON c.id = cs.course_id
+	WHERE stu.id = ?;`
+
+	var courses []*model.StudentCoursesDetail
+	if err := s.db.Select(&courses, query, studentID); err != nil {
+		log.Fatalf("Error querying the database: %v", err)
+	}
+
+	return courses, nil
 }
