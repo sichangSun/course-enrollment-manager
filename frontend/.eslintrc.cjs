@@ -5,9 +5,9 @@ module.exports = {
   root: true,
   extends: [
     'eslint:recommended',
-    '@vue/eslint-config-prettier',
-    'plugin:vue/vue3-essential',
-    'prettier'
+    'plugin:vue/vue3-recommended',
+    'prettier',
+    '@vue/eslint-config-prettier'
   ],
   plugins: [
     'vue',
@@ -15,5 +15,11 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest'
+  },
+  rules: {
+    'tabWidth':4,
+    'useTabs': false,
+    'vue/multi-word-component-names': 0
   }
+
 }
