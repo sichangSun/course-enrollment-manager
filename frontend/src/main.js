@@ -6,7 +6,6 @@ import { createVuetify } from 'vuetify'
 
 import App from './App.vue'
 import router from './router'
-// import vuetify from '../plugins/vuetify/vuetify.js'
 
 // Vuetify
 import 'vuetify/styles'
@@ -19,8 +18,6 @@ const vuetify = createVuetify({
   components,
   directives,
 })
-
-
 
 const app = createApp(App)
 

@@ -8,12 +8,23 @@ import { RouterLink, RouterView } from 'vue-router'
     <!-- <h1>CourseEnrollmentManager</h1> -->
     <div >
       <nav>
-        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/"></RouterLink>
       </nav>
     </div>
   </header>
+<main>
+  <v-app>
+    <v-app-bar>
+      <v-app-bar-title>
+        Application
+      </v-app-bar-title>
+    <!-- <v-btn v-if="">PasswordChange</v-btn> -->
+    <template v-slot:append></template>
+    </v-app-bar>
+    <RouterView />
+  </v-app>
+</main>
 
-  <RouterView />
 
 </template>
 
