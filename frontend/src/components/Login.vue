@@ -12,7 +12,7 @@
       <v-row>
         <v-col>
           <v-text-field
-          v-model="state.email"
+          v-model="v$.email.$model"
           label="E-mail"
           @blur="v$.email.$touch"
           :error-messages ="v$.email.$errors.map((e) => e.$message)"
@@ -24,7 +24,7 @@
       <v-row>
         <v-col>
           <v-text-field
-            v-model="state.password"
+            v-model="v$.password.$model"
             label="Password"
             type="password"
             @blur="v$.password.$touch"
