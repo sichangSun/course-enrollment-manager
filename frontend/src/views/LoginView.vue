@@ -1,21 +1,63 @@
 <template>
   <v-app>
-  <Login class="login"></Login>
+  <Login class="login"
+  @login-sumbit="loginSumbit"
+  :errMsg="errMsg"
+  ></Login>
+
   </v-app>
 
 </template>
 
 <script setup>
+import { reactive, computed, ref, watch} from 'vue'
   import Login from  '../components/Login.vue'
-  // import { VApp, VBtn } from 'vuetify/components';
+  import { useVuelidate } from '@vuelidate/core'
+  import { required, email,minLength } from '@vuelidate/validators'
   import { useRouter } from 'vue-router'
+  import axios from 'axios';
 
   const router = useRouter()
 
-    // function toCourse(){
-    //   console.log('OK')
-    //   $router.push({ name:'courseList'})
-    // }
+  let errMsg=ref('')
+  const loginSumbit = async (state,$v) => {
+
+    if ($v.$invalid) {
+      errMsg.value='ログインが問題ありました。確認した上もう一回お試しください。'
+      return;
+    }
+
+    const res={
+      email: state.email,
+      password: state.password,
+    }
+    // call API
+    try {
+      await axios.post(`${_BASE_URL_}api/login`, res,{
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      .then(response => {
+        console.log('Login successful');
+        //Save jwt token
+        localStorage.setItem('jwtToken', response.data.token)
+        router.push({
+          // Successful to StudentHome
+          name: 'StudentHome'
+          });
+      })
+    } catch (error) {
+      console.error('Login failed:', error.response.data);
+      if(error.response.data.error=='user not found' || error.response.data.error =='invalid password'){
+        errMsg.value='メールアドレス、またはパスワードが間違っています。'
+      }else{
+        router.push({
+        name: 'ErrorPage'
+        })
+      }
+    }
+  }
 
 </script>
 <style>
