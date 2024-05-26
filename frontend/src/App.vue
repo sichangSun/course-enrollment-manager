@@ -16,10 +16,10 @@ import { RouterLink, RouterView } from 'vue-router'
   <v-app>
     <v-app-bar>
       <v-app-bar-title>
-        Application
+        学生履修授業登録システム
       </v-app-bar-title>
     <!-- <v-btn v-if="">PasswordChange</v-btn> -->
-    <template v-slot:append></template>
+    <!-- <template v-slot:append></template> -->
     </v-app-bar>
     <RouterView />
   </v-app>
