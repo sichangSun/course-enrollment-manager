@@ -1,8 +1,6 @@
 <template>
   <h1>授業一覧</h1>
-  <BaseInfo
-      :student="student"
-      :btnName="btn"/>
+ <BackToStudentHome/>
 <!-- totdo frezz search  -->
   <CoursesList></CoursesList>
 </template>
@@ -11,6 +9,7 @@
 
 import { reactive } from 'vue'
 import CoursesList from '../components/CoursesList.vue'
+import BackToStudentHome from '../components/BackToStudentHome.vue'
 
 let btn=reactive({
           btnTitle:'履修登録',
@@ -22,4 +21,8 @@ let btn=reactive({
 h1{
   margin: 90px auto;
 }
+/* .btn-back{
+  margin: 100px 40px;
+  position: absolute!important;
+} */
 </style>
