@@ -28,7 +28,8 @@ func New(conf *RouterConfig) *Router {
 
 	e.Use(middleware.Recover())
 	// e.Use(middleware.Gzip())
-	e.Use(middleware.CSRF())
+	e.Use(middleware.CORS())
+	// e.Use(middleware.CSRF())
 
 	courseRepository := mysql.NewCourseRepository(conf.DB)
 	courseService := service.NewCourseService(courseRepository)
@@ -49,21 +50,22 @@ func New(conf *RouterConfig) *Router {
 	{
 		g := e.Group("/api")
 		{
-			g1 := g.Group("/auth")
-			g1.Use(echojwt.WithConfig(config))
-			g1.PUT("/change-password", studentController.ChangePassword)
-			g1.GET("/courses", studentController.GetStudentCourses)
-			g1.POST("/course", studentController.RegisterCourse)
-			g1.DELETE("/course/:course_id", studentController.UnRegisterCourse)
-
+			g1 := g.Group("")
+			g1.POST("/login", studentController.Login)
 		}
 		{
 			g2 := g.Group("/auth")
-			g2.POST("/login", studentController.Login)
+			g2.Use(middleware.CSRF())
+			g2.Use(echojwt.WithConfig(config))
+			g2.PUT("/change-password", studentController.ChangePassword)
+			g2.GET("/courses", studentController.GetStudentCourses)
+			g2.POST("/course", studentController.RegisterCourse)
+			g2.DELETE("/course/:course_id", studentController.UnRegisterCourse)
+
 		}
 		{
 			g3 := g.Group("/courses")
-
+			g3.Use(middleware.CSRF())
 			g3.GET("", courseController.GetAllCourses)
 			g3.GET("/:course_id", courseController.GetOneCourseDetail)
 		}
