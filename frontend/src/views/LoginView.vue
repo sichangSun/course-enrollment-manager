@@ -12,10 +12,8 @@
 <script setup>
 import { reactive, computed, ref, watch} from 'vue'
   import Login from  '../components/Login.vue'
-  import { useVuelidate } from '@vuelidate/core'
-  import { required, email,minLength } from '@vuelidate/validators'
   import { useRouter } from 'vue-router'
-  import axios from 'axios';
+  import axios from '../axios-config';
 
   const router = useRouter()
 
@@ -33,15 +31,12 @@ import { reactive, computed, ref, watch} from 'vue'
     }
     // call API
     try {
-      await axios.post(`${_BASE_URL_}api/login`, res,{
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      })
+      await axios.post(`${_BASE_URL_}api/login`, res)
       .then(response => {
         console.log('Login successful');
-        //Save jwt token
-        localStorage.setItem('jwtToken', response.data.token)
+        // const token = localStorage.getItem('jwtToken');
+        // //Save jwt token
+        // localStorage.setItem('jwtToken', response.data.token)
         router.push({
           // Successful to StudentHome
           name: 'StudentHome'
