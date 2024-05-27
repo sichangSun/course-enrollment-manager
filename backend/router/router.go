@@ -51,7 +51,11 @@ func New(conf *RouterConfig) *Router {
 		{
 			g1 := g.Group("/auth")
 			g1.Use(echojwt.WithConfig(config))
-			// 	g1.PUT("/students/password", changePassword)
+			g1.PUT("/change-password", studentController.ChangePassword)
+			g1.GET("/courses", studentController.GetStudentCourses)
+			g1.POST("/course", studentController.RegisterCourse)
+			g1.DELETE("/course/:course_id", studentController.UnRegisterCourse)
+
 		}
 		{
 			g2 := g.Group("/auth")
@@ -61,7 +65,7 @@ func New(conf *RouterConfig) *Router {
 			g3 := g.Group("/courses")
 
 			g3.GET("", courseController.GetAllCourses)
-			g3.GET("/:id", courseController.GetOneCourseDetail)
+			g3.GET("/:course_id", courseController.GetOneCourseDetail)
 		}
 	}
 

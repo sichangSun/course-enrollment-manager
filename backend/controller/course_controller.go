@@ -54,7 +54,7 @@ func (con *CourseController) GetAllCourses(c echo.Context) error {
 // GetGetOneCourseDetail ...
 func (con *CourseController) GetOneCourseDetail(c echo.Context) error {
 	ctx := c.Request().Context()
-	courseID := c.Param("id")
+	courseID := c.Param("course_id")
 
 	id, err := strconv.Atoi(courseID)
 	if err != nil {
