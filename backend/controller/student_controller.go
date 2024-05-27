@@ -117,7 +117,7 @@ func (con *StudentController) GetStudentCourses(c echo.Context) error {
 	out, err := con.StudentService.GetStudentCourses(ctx, studentID)
 	if err != nil {
 		if errors.Is(err, service.ErrNotFound) {
-			return c.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
+			return c.JSON(http.StatusOK, map[string]string{"message": "successful but 0 row"})
 		}
 		c.Logger().Error(err.Error())
 		return c.NoContent(http.StatusInternalServerError)
