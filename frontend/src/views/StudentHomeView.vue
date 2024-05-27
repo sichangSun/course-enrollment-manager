@@ -1,5 +1,6 @@
 <template>
   <main>
+    <v-btn @click="toChangePasswordPage" class="password-change-btn">パスワード変更</v-btn>
 
     <BaseInfo
       :student="student"
@@ -14,18 +15,22 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref ,onBeforeMount} from 'vue'
 import MyCourseSchedule from '../components/MyCourseSchedule.vue'
 import BaseInfo from '../components/BaseInfo.vue'
 import { useRouter } from 'vue-router'
+import axios from '../axios-config'
+const router = useRouter();
+
+  // Todo need to add get studentInfo API
   let student=reactive({
-     studentName:'huahua',
-     studentInfo:'経済学部xx学科xx専攻'
+     studentName:'student name',
+     studentInfo:'student Info'
 
   })
 
       const days = reactive(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
-    //   const timeFrames=['9:00 ~ 10:30','10:40 ~ 12:10','13:10 ~ 14:40','14:50 ~ 16:20','16:30 ~ 18:00'];
+
       const timeSlots = [
         {name:'First',timeFrame:'9:00 ~ 10:30'},
         {name:'Second',timeFrame:'10:40 ~ 12:10'},
@@ -34,10 +39,10 @@ import { useRouter } from 'vue-router'
         {name:'Fifth',timeFrame:'16:30 ~ 18:00'}
     ];
       let gridData = reactive({
-        First: { Monday: 'Math', Tuesday: '', Wednesday: 'English', Thursday: '', Friday: ''},
+        First: { Monday: '', Tuesday: '', Wednesday: '', Thursday: '', Friday: ''},
         Second: { Monday: '', Tuesday: '', Wednesday: '', Thursday: '', Friday: ''},
         Third: { Monday: '', Tuesday: '', Wednesday: '', Thursday: '', Friday: ''},
-        Fourth: { Monday: 'Gym', Tuesday: 'Art', Wednesday: '', Thursday: '', Friday: '' },
+        Fourth: { Monday: '', Tuesday: '', Wednesday: '', Thursday: '', Friday: '' },
         Fifth: { Monday: '', Tuesday: '', Wednesday: '', Thursday: '', Friday: ''}
       });
 
@@ -45,32 +50,53 @@ import { useRouter } from 'vue-router'
           btnTitle:'履修登録',
           btnName:'授業一覧'
       })
-  // const router = useRouter();
-  //   function pushNew(){
-  //   console.log('OK')
-  //   router.push({ name:'login'})
-  // }
+
+  onBeforeMount(async () => {
+    let res ={};
+    try{
+      await axios.get(`${_BASE_URL_}api/auth/courses`)
+      .then(response => {
+        console.log('Get courses successful');
+        console.log(response.data)
+        if(response.data.message && response.data.message=='successful but 0 row'){
+          return
+        }
+        res = response.data
+      })
+    }catch(error){
+      if(error.response){
+      console.error('Get courses failed:', error.response.data);
+      }
+      router.push({
+        name: 'ErrorPage'
+      })
+    }
+    //console.log(res)
+
+    // dayMap & periodMap
+    const dayMap = {1: 'Monday', 2: 'Tuesday', 3: 'Wednesday', 4: 'Thursday', 5: 'Friday'};
+    const periodMap = {1: 'First', 2: 'Second', 3: 'Third', 4: 'Fourth', 5: 'Fifth'};
+    // gridData setting
+    res.CoursesList.forEach(course => {
+      course.Schedules.forEach(schedule => {
+        const day = dayMap[schedule.DayOfWeek];   //DayOfWeek
+        const period = periodMap[schedule.Period]; // Period
+          gridData[period][day] = course.CourseName;
+      });
+    });
+  })
+  function toChangePasswordPage(){
+    router.push({
+    name: 'ChangePassword'
+  })
+  }
 </script>
 <style>
 .schedule{
   position: relative;
   top: 30px;
 }
-/* .basic-box{
-    padding: 20px;
-    margin: 90px 20px auto;
+.password-change-btn{
+  margin: 90px 10px auto;
 }
-.basic-info{
-  width: 50%;
-    margin: auto 14%;
-}
-
-.basic-regu{
-  position: absolute;
-    margin: auto 65%;
-    margin-top: -70px;
-}
-.regu{
-  margin: 30px;
-} */
 </style>

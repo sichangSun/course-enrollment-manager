@@ -48,7 +48,7 @@ func (con *StudentController) Login(c echo.Context) error {
 
 	if err != nil {
 		if errors.Is(err, repository.ErrStudentNotFound) {
-			return c.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
+			return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
 		}
 		if errors.Is(err, service.ErrInvalidPassword) {
 			return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
@@ -90,7 +90,7 @@ func (con *StudentController) ChangePassword(c echo.Context) error {
 	err = con.StudentService.UpdatePassword(ctx, in)
 	if err != nil {
 		if errors.Is(err, repository.ErrStudentNotFound) {
-			return c.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
+			return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
 		}
 		if errors.Is(err, service.ErrInvalidPassword) {
 			return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
@@ -117,7 +117,7 @@ func (con *StudentController) GetStudentCourses(c echo.Context) error {
 	out, err := con.StudentService.GetStudentCourses(ctx, studentID)
 	if err != nil {
 		if errors.Is(err, service.ErrNotFound) {
-			return c.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
+			return c.JSON(http.StatusOK, map[string]string{"message": "successful but 0 row"})
 		}
 		c.Logger().Error(err.Error())
 		return c.NoContent(http.StatusInternalServerError)

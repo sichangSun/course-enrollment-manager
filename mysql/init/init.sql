@@ -133,3 +133,6 @@ Part 3: The Economics of Information Asymmetries 12. The winner's Curse 13. Hidd
 
 INSERT INTO course_schedules (course_id,day_of_week,period) VALUES
 (1,3,2),(2,3,4),(3,1,4),(4,5,3),(4,5,4),(5,2,3),(5,4,3);
+
+INSERT INTO students_courses (student_id,course_id) VALUES
+(1,2),(1,3);

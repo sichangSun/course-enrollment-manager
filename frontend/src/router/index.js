@@ -30,6 +30,18 @@ const router = createRouter({
       name: 'CourseDetail',
       component: () => import('../views/CourseDetail.vue'),
     },
+    {
+      //
+      path: '/change-password',
+      name: 'ChangePassword',
+      component: () => import('../views/ChangePassword.vue'),
+    },
+    {
+      //
+      path: '/error',
+      name: 'ErrorPage',
+      component: () => import('../views/ErrorPage.vue'),
+    },
 
   ]
 })
