@@ -29,20 +29,36 @@
 ### 1.リポジトリのクローン<br>
 ### 2.env.localを追加<br>
 フロントエンドのルートディレクトリに .env.local ファイルを作成し、次の内容を記入してください。<br>
-APP_ENV=local<br>
-VITE_BASE_URL=http://localhost:8000/<br>
+```
+
+APP_ENV=local
+VITE_BASE_URL=http://localhost:8000
+
+```
 
 
 ### 3. Docker コンテナの構築
 以下のコマンドを使用して Docker コンテナをビルドします。<br>
-docker compose build<br>
+```
+
+docker compose build
+
+```
 コンテナを起動するためには、次のコマンドを実行します。<br>
-docker compose up<br>
+```
+
+docker compose up
+
+```
 ### 注意点
 ・データベースの起動が遅れることがあります。そのため、バックエンドの起動に失敗する場合がDBが完全に起動していない可能性が高いです。
 ・もしバックエンド起動が失敗した場合、DBが完全に起動するまで少し待ってから、バックエンドのビルドを再試行してください。<br>
-docker compose build backend<br>
-docker compose up backend -d<br>
+```
+
+docker compose build backend
+docker compose up backend -d
+
+```
 
 ### 4. アプリケーションへのアクセス
 ブラウザを開いて以下のURLにアクセスします。<br>
