@@ -5,8 +5,8 @@
   >
   <!-- persistent -->
     <template v-slot:activator="{ props: activatorProps}">
-      <v-btn v-bind="activatorProps" color="primary">
-        登録
+      <v-btn v-bind="activatorProps" :color="buttonColor">
+        {{ course.courseDisplay }}
       </v-btn>
     </template>
     <v-card class="card-box">
@@ -17,7 +17,7 @@
         <v-btn @click="dialog=flase" class="button-space">
           キャンセル
         </v-btn>
-        <v-btn class="button-space" @click="$emit('registerCourse',course.ID,course.courseFlg)" color="primary">
+        <v-btn class="button-space" @click="$emit('registerOrDelCourse',course.ID,course.courseFlg)" color="primary">
           確定
         </v-btn>
       </template>
@@ -26,9 +26,8 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
-const props=defineProps(['course','dialog'])
-
+import { reactive, ref,onBeforeMount } from 'vue'
+const props=defineProps(['course','dialog','buttonColor'])
 
 let dialog= ref(false)
 
@@ -38,5 +37,14 @@ let dialog= ref(false)
 .card-box{
   height: auto;
 }
+/* .register-button {
+  color:primary;
+  color: white;
+} */
+
+/* .delete-button {
+  background-color: red;
+  color: white;
+} */
 </style>
 

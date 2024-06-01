@@ -67,7 +67,6 @@ const router = useRouter();
           return
         }
         res = response.data
-        console.log(res)
       })
     }catch(error){
       if(error.response){
@@ -78,19 +77,18 @@ const router = useRouter();
       })
     }
     //console.log(res)
-    //save data to store
-    //res.CoursesList.forEach(course => {
-    //     store.$patch(() => {
-    //   state.items.push({ name: 'shoes', quantity: 1 })
-    //   state.hasChanged = true
-    // })
 
     // dayMap & periodMap
     const dayMap = {1: 'Monday', 2: 'Tuesday', 3: 'Wednesday', 4: 'Thursday', 5: 'Friday'};
     const periodMap = {1: 'First', 2: 'Second', 3: 'Third', 4: 'Fourth', 5: 'Fifth'};
-    // gridData setting
+    // gridData & store setting
     res.CoursesList.forEach(course => {
-      store.$patch((state) => state.studentState.studentCourse.push(course))
+      //find course by Id in store
+      const c=store.getCourseById(course.CourseID)
+      if(!c){
+        //if it doesn't exist,save data to store
+        store.$patch((state) => state.studentState.studentCourses.push(course))
+      }
       course.Schedules.forEach(schedule => {
         const day = dayMap[schedule.DayOfWeek];   //DayOfWeek
         const period = periodMap[schedule.Period]; // Period
