@@ -2,11 +2,27 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
+
+  const studentState = ref({
+    studentName:'',
+    studentInfo:{
+      studentEmail:''
+    },
+    studentCourses:[
+    ]
+  })
+
+
+  // updateStudentCourses
+  function updateStudentCourses(courseList) {
+    studentState.value.studentCourses = courseList;
+
   }
 
-  return { count, doubleCount, increment }
+  function getCourseById(courseId) {
+    return studentState.value.studentCourses.find(course => course.CourseID === courseId);
+  }
+
+
+  return { studentState, updateStudentCourses,getCourseById }
 })

@@ -14,7 +14,9 @@ import { reactive, computed, ref, watch} from 'vue'
   import Login from  '../components/Login.vue'
   import { useRouter } from 'vue-router'
   import axios from '../axios-config';
+  import { useCounterStore } from '@/stores/counter';
 
+  const store =useCounterStore()
   const router = useRouter()
 
   let errMsg=ref('')
@@ -34,9 +36,13 @@ import { reactive, computed, ref, watch} from 'vue'
       await axios.post(`${_BASE_URL_}api/login`, res)
       .then(response => {
         console.log('Login successful');
+        //Save jwt token function in axios-config
+
         // const token = localStorage.getItem('jwtToken');
-        // //Save jwt token
         // localStorage.setItem('jwtToken', response.data.token)
+
+        // save studentName in store
+        store.studentState.studentName=response.data.studentName
         router.push({
           // Successful to StudentHome
           name: 'StudentHome'

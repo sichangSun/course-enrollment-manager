@@ -59,7 +59,11 @@ func (con *StudentController) Login(c echo.Context) error {
 		c.Logger().Error(err.Error())
 		return c.NoContent(http.StatusInternalServerError)
 	}
-	return c.JSON(http.StatusOK, map[string]string{"token": token})
+	res := map[string]string{
+		"token":       token,
+		"studentName": out.Student.Name,
+	}
+	return c.JSON(http.StatusOK, res)
 }
 
 // ChangePassword
