@@ -20,11 +20,16 @@ import MyCourseSchedule from '../components/MyCourseSchedule.vue'
 import BaseInfo from '../components/BaseInfo.vue'
 import { useRouter } from 'vue-router'
 import axios from '../axios-config'
+import { useCounterStore } from '@/stores/counter'
+import { storeToRefs } from 'pinia'
+
+
+const store = useCounterStore()
 const router = useRouter();
 
   // Todo need to add get studentInfo API
   let student=reactive({
-     studentName:'student name',
+     studentName:store.studentState.studentName,
      studentInfo:'student Info'
 
   })
@@ -62,6 +67,7 @@ const router = useRouter();
           return
         }
         res = response.data
+        console.log(res)
       })
     }catch(error){
       if(error.response){
@@ -72,12 +78,19 @@ const router = useRouter();
       })
     }
     //console.log(res)
+    //save data to store
+    //res.CoursesList.forEach(course => {
+    //     store.$patch(() => {
+    //   state.items.push({ name: 'shoes', quantity: 1 })
+    //   state.hasChanged = true
+    // })
 
     // dayMap & periodMap
     const dayMap = {1: 'Monday', 2: 'Tuesday', 3: 'Wednesday', 4: 'Thursday', 5: 'Friday'};
     const periodMap = {1: 'First', 2: 'Second', 3: 'Third', 4: 'Fourth', 5: 'Fifth'};
     // gridData setting
     res.CoursesList.forEach(course => {
+      store.$patch((state) => state.studentState.studentCourse.push(course))
       course.Schedules.forEach(schedule => {
         const day = dayMap[schedule.DayOfWeek];   //DayOfWeek
         const period = periodMap[schedule.Period]; // Period
