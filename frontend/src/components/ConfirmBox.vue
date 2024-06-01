@@ -12,13 +12,12 @@
     <v-card class="card-box">
     <v-card-title>確認</v-card-title>
       <slot name="courseName"></slot>
-      この授業登録してよろしいでしょうか？
       <template v-slot:actions>
         <v-spacer></v-spacer>
         <v-btn @click="dialog=flase" class="button-space">
           キャンセル
         </v-btn>
-        <v-btn class="button-space" @click="$emit('registerCourse',course.ID)" color="primary">
+        <v-btn class="button-space" @click="$emit('registerCourse',course.ID,course.courseFlg)" color="primary">
           確定
         </v-btn>
       </template>

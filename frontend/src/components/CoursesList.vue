@@ -21,7 +21,7 @@
             :course="course"
             @registerCourse="registerCourse">
               <template v-slot:courseName>
-                {{ course.CourseName }}
+                {{ course.CourseName }}この授業{{ course.courseDisplay }}してよろしでしょうか？
               </template>
           </ConfirmBox>
             <!-- <v-btn class="button-space" color="primary" @click="$emit('registerCourse',course.CourseID)">
@@ -37,9 +37,8 @@
 import { reactive, ref } from 'vue'
 import ConfirmBox from  './ConfirmBox.vue'
 
-const props=defineProps(['courseList'])
+const props=defineProps(['courseList','chooseFlg'])
 const emit=defineEmits(['registerCourse'])
-
 
 const registerCourse = async(id)=>{
   emit('registerCourse',id)
