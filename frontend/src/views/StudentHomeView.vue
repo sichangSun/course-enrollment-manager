@@ -21,8 +21,6 @@ import BaseInfo from '../components/BaseInfo.vue'
 import { useRouter } from 'vue-router'
 import axios from '../axios-config'
 import { useCounterStore } from '@/stores/counter'
-import { storeToRefs } from 'pinia'
-
 
 const store = useCounterStore()
 const router = useRouter();
@@ -44,11 +42,11 @@ const router = useRouter();
         {name:'Fifth',timeFrame:'16:30 ~ 18:00'}
     ];
       let gridData = reactive({
-        First: { Monday: '', Tuesday: '', Wednesday: '', Thursday: '', Friday: ''},
-        Second: { Monday: '', Tuesday: '', Wednesday: '', Thursday: '', Friday: ''},
-        Third: { Monday: '', Tuesday: '', Wednesday: '', Thursday: '', Friday: ''},
-        Fourth: { Monday: '', Tuesday: '', Wednesday: '', Thursday: '', Friday: '' },
-        Fifth: { Monday: '', Tuesday: '', Wednesday: '', Thursday: '', Friday: ''}
+        First: { Monday: {name:'',id:''}, Tuesday: {name:'',id:''}, Wednesday: {name:'',id:''}, Thursday: {name:'',id:''}, Friday: {name:'',id:''}},
+        Second: { Monday: {name:'',id:''}, Tuesday: {name:'',id:''}, Wednesday: {name:'',id:''}, Thursday: {name:'',id:''}, Friday: {name:'',id:''}},
+        Third: { Monday: {name:'',id:''}, Tuesday: {name:'',id:''}, Wednesday: {name:'',id:''}, Thursday: {name:'',id:''}, Friday: {name:'',id:''}},
+        Fourth: { Monday: {name:'',id:''}, Tuesday: {name:'',id:''}, Wednesday: {name:'',id:''}, Thursday: {name:'',id:''}, Friday: {name:'',id:''} },
+        Fifth: { Monday: {name:'',id:''}, Tuesday: {name:'',id:''}, Wednesday: {name:'',id:''}, Thursday: {name:'',id:''}, Friday: {name:'',id:''}}
       });
 
       let btn=reactive({
@@ -57,7 +55,7 @@ const router = useRouter();
       })
 
   onBeforeMount(async () => {
-    let res ={};
+    let res ={}
     try{
       await axios.get(`${_BASE_URL_}api/auth/courses`)
       .then(response => {
@@ -70,7 +68,7 @@ const router = useRouter();
       })
     }catch(error){
       if(error.response){
-      console.error('Get courses failed:', error.response.data);
+      console.error('Get courses failed:', error.response.data)
       }
       router.push({
         name: 'ErrorPage'
@@ -79,8 +77,8 @@ const router = useRouter();
     //console.log(res)
 
     // dayMap & periodMap
-    const dayMap = {1: 'Monday', 2: 'Tuesday', 3: 'Wednesday', 4: 'Thursday', 5: 'Friday'};
-    const periodMap = {1: 'First', 2: 'Second', 3: 'Third', 4: 'Fourth', 5: 'Fifth'};
+    const dayMap = {1: 'Monday', 2: 'Tuesday', 3: 'Wednesday', 4: 'Thursday', 5: 'Friday'}
+    const periodMap = {1: 'First', 2: 'Second', 3: 'Third', 4: 'Fourth', 5: 'Fifth'}
     // gridData & store setting
     res.CoursesList.forEach(course => {
       //find course by Id in store
@@ -90,11 +88,12 @@ const router = useRouter();
         store.$patch((state) => state.studentState.studentCourses.push(course))
       }
       course.Schedules.forEach(schedule => {
-        const day = dayMap[schedule.DayOfWeek];   //DayOfWeek
-        const period = periodMap[schedule.Period]; // Period
-          gridData[period][day] = course.CourseName;
-      });
-    });
+        const day = dayMap[schedule.DayOfWeek]  //DayOfWeek
+        const period = periodMap[schedule.Period] // Period
+          gridData[period][day].name = course.CourseName
+          gridData[period][day].id = course.CourseID
+      })
+    })
   })
   function toChangePasswordPage(){
     router.push({
