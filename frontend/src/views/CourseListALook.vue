@@ -4,14 +4,13 @@
   <CoursesList
     :courseList="courseList"
     @getDetail="getDetail"
-    @deleteCourse="deleteCourse"
-    @registerCourse="registerCourse">
+    >
   </CoursesList>
 </template>
 
 <script setup>
 
-  import { onBeforeMount, reactive, ref } from 'vue'
+  import { onBeforeMount, reactive, ref ,watchEffect} from 'vue'
   import CoursesList from '../components/CoursesList.vue'
   import BackToStudentHome from '../components/BackToStudentHome.vue'
   import { useRouter } from 'vue-router'
@@ -31,7 +30,7 @@
 
 
 
-  onBeforeMount(async()=>{
+  watchEffect(async()=>{
     try{
       await axios.get(`${_BASE_URL_}api/courses`)
       .then(response=>{
@@ -66,18 +65,7 @@
 const getDetail = async(id)=>{
   console.log(id)
 }
-// registerCourse
-const registerCourse = async(id)=>{
-  console.log(id)
-  console.log('registerCourse')
 
-}
-
-const deleteCourse = async(id)=>{
-  console.log(id)
-  console.log('deleteCourse')
-
-}
 
 
 </script>

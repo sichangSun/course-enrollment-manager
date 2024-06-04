@@ -19,9 +19,8 @@
             </v-btn>
             <ConfirmBox
             :course="course"
-            :buttonColor="getButtonColor(course)"
-            @registerOrDelCourse="registerOrDelCourse">
-              <template v-slot:courseName>
+            :buttonColor="getButtonColor(course)">
+              <template v-slot:content>
                 {{ course.CourseName }}この授業{{ course.courseDisplay }}してよろしでしょうか？
               </template>
           </ConfirmBox>
@@ -37,26 +36,26 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import ConfirmBox from  './ConfirmBox.vue'
-import { useRouter } from 'vue-router';
-const router=useRouter()
+// import { useRouter } from 'vue-router';
+// const router=useRouter()
 const props=defineProps(['courseList','chooseFlg'])
 const emit=defineEmits(['registerCourse'])
 
-const registerOrDelCourse = async(id,courseFlg)=>{
-  if(courseFlg==1){
-    //delete
-    emit('deleteCourse',id)
+// const registerOrDelCourse = async(id,courseFlg)=>{
+//   if(courseFlg==1){
+//     //delete
+//     emit('deleteCourse',id)
 
-  }else if(courseFlg==0){
-    //register
-    emit('registerCourse',id)
-  }else{
-    console.error('Attribute not found : courseFlg')
-    router.push({
-      name: 'ErrorPage'
-    })
-  }
-}
+//   }else if(courseFlg==0){
+//     //register
+//     emit('registerCourse',id)
+//   }else{
+//     console.error('Attribute not found : courseFlg')
+//     router.push({
+//       name: 'ErrorPage'
+//     })
+//   }
+// }
 
 const getButtonColor = (course) => {
     return course.courseFlg === 1 ? 'red' : 'primary'
