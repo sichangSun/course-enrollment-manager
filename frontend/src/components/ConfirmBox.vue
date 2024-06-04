@@ -11,13 +11,13 @@
     </template>
     <v-card class="card-box">
     <v-card-title>確認</v-card-title>
-      <slot name="courseName"></slot>
+      <slot name="content"></slot>
       <template v-slot:actions>
         <v-spacer></v-spacer>
         <v-btn @click="dialog=flase" class="button-space">
           キャンセル
         </v-btn>
-        <v-btn class="button-space" @click="$emit('registerOrDelCourse',course.ID,course.courseFlg)" color="primary">
+        <v-btn class="button-space" @click=registerOrDelCourse(course.ID,course.courseFlg) color="primary">
           確定
         </v-btn>
       </template>
@@ -27,9 +27,37 @@
 
 <script setup>
 import { reactive, ref,onBeforeMount } from 'vue'
-const props=defineProps(['course','dialog','buttonColor'])
+const props=defineProps(['course','buttonColor'])
 
 let dialog= ref(false)
+function registerOrDelCourse (id,courseFlg){
+  if(courseFlg==1){
+    //delete
+    deleteCourse(id)
+
+  }else if(courseFlg==0){
+    //register
+    registerCourse(id)
+  }else{
+    console.error('Attribute not found : courseFlg')
+    router.push({
+      name: 'ErrorPage'
+    })
+  }
+}
+
+// registerCourse
+const registerCourse = async(id)=>{
+  console.log(id)
+  console.log('registerCourse')
+
+}
+//deleteCourse
+const deleteCourse = async(id)=>{
+  console.log(id)
+  console.log('deleteCourse')
+
+}
 
 </script>
 

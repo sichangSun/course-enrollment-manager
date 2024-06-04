@@ -18,7 +18,7 @@
                 <v-col v-for="day in days" :key="day" cols="2">
                     <v-card class="pa-2 font-in-list" outlined>
                         <v-card-title v-if="gridData[timeSlot.name] && gridData[timeSlot.name][day]">
-                          <router-link to="/detail">{{ gridData[timeSlot.name][day] }}</router-link>
+                          <router-link :to="`/detail/${gridData[timeSlot.name][day].id}`">{{ gridData[timeSlot.name][day].name }}</router-link>
                         </v-card-title>
                     </v-card>
                 </v-col>
