@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/sichangSun/course-enrollment-manager/domain/model"
 	"github.com/sichangSun/course-enrollment-manager/domain/repository"
 	"github.com/sichangSun/course-enrollment-manager/domain/service"
@@ -126,8 +127,13 @@ func (con *StudentController) GetStudentCourses(c echo.Context) error {
 		c.Logger().Error(err.Error())
 		return c.NoContent(http.StatusInternalServerError)
 	}
+	// Get CSRF Token from context
+	csrfToken := c.Get(middleware.DefaultCSRFConfig.ContextKey).(string)
 	courseList := StudentCourseControllerOutput{out.StudentCourses}
-	res := courseList
+	res := map[string]interface{}{
+		"courses":   courseList,
+		"csrfToken": csrfToken,
+	}
 
 	return c.JSON(http.StatusOK, res)
 
