@@ -29,19 +29,18 @@ watchEffect(async () => {
   let res ={}
 
  try{
-  await axios.get(`${_BASE_URL_}api/courses/${courseId}`)
-    .then(response=>{
-      console.log(response.data.CourseDetail)
-      if(response.data.CourseDetail){
-        res = response.data.CourseDetail
-      }
-    })
+  const response= await axios.get(`${_BASE_URL_}api/courses/${courseId}`)
+
+    console.log(response.data.course.CourseDetail)
+    if(response.data.course.CourseDetail){
+      res = response.data.course.CourseDetail
+    }
   }
   catch(error){
     console.error('Get detail failed:', error.response.data)
 
   }
-  console.log(res)
+  // console.log(res)
   const c=store.getCourseById(res.ID)
 
   if(c){

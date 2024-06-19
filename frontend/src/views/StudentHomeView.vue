@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { reactive, ref ,onBeforeMount} from 'vue'
+import { reactive, ref ,onBeforeMount,} from 'vue'
 import MyCourseSchedule from '../components/MyCourseSchedule.vue'
 import BaseInfo from '../components/BaseInfo.vue'
 import { useRouter } from 'vue-router'
@@ -23,7 +23,10 @@ import axios from '../axios-config'
 import { useCounterStore } from '@/stores/counter'
 
 const store = useCounterStore()
-const router = useRouter();
+const router = useRouter()
+
+onBeforeMount(fetchData)
+// onBeforeUpdate(fetchData)
 
   // Todo need to add get studentInfo API
   let student=reactive({
@@ -54,18 +57,16 @@ const router = useRouter();
           btnName:'授業一覧'
       })
 
-  onBeforeMount(async () => {
+  async function fetchData(){
     let res ={}
     try{
-      await axios.get(`${_BASE_URL_}api/auth/courses`)
-      .then(response => {
+      const response = await axios.get(`${_BASE_URL_}api/auth/courses`)
         console.log('Get courses successful');
-        console.log(response.data)
+        // console.log(response.data)
         if(response.data.message && response.data.message=='successful but 0 row'){
           return
         }
         res = response.data
-      })
     }catch(error){
       if(error.response){
       console.error('Get courses failed:', error.response.data)
@@ -74,13 +75,12 @@ const router = useRouter();
         name: 'ErrorPage'
       })
     }
-    //console.log(res)
 
     // dayMap & periodMap
     const dayMap = {1: 'Monday', 2: 'Tuesday', 3: 'Wednesday', 4: 'Thursday', 5: 'Friday'}
     const periodMap = {1: 'First', 2: 'Second', 3: 'Third', 4: 'Fourth', 5: 'Fifth'}
     // gridData & store setting
-    res.CoursesList.forEach(course => {
+    res.courses.CoursesList.forEach(course => {
       //find course by Id in store
       const c=store.getCourseById(course.CourseID)
       if(!c){
@@ -94,7 +94,9 @@ const router = useRouter();
           gridData[period][day].id = course.CourseID
       })
     })
-  })
+    //Save csrftoken
+    store.updateToken(res.csrfToken)
+  }
   function toChangePasswordPage(){
     router.push({
     name: 'ChangePassword'

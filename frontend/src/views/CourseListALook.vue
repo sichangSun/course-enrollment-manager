@@ -10,7 +10,7 @@
 
 <script setup>
 
-  import { onBeforeMount, reactive, ref ,watchEffect} from 'vue'
+  import { onBeforeMount, reactive, ref } from 'vue'
   import CoursesList from '../components/CoursesList.vue'
   import BackToStudentHome from '../components/BackToStudentHome.vue'
   import { useRouter } from 'vue-router'
@@ -27,20 +27,22 @@
 
   const courseList=reactive([])
   const res=reactive([])
+  onBeforeMount(fetchData)
+  // onBeforeUpdate(fetchData)
 
-
-
-  watchEffect(async()=>{
+  async function fetchData() {
+    // let res2={}
+    let token=''
     try{
-      await axios.get(`${_BASE_URL_}api/courses`)
-      .then(response=>{
-        response.data.CourseList.forEach(course=> {
-          res.push(course)
-        });
-        console.log(`All courseList is`)
-        console.log(res)
+      const response= await axios.get(`${_BASE_URL_}api/courses`)
+      // res2=response.data
+      // console.log(res2)
 
+      response.data.courseList.CourseList.forEach(course=> {
+        res.push(course)
       })
+      token=response.data.csrfToken
+
     }catch(error){
       console.error('Get courses failed:', error.response.data)
       router.push({
@@ -56,11 +58,10 @@
       }
     });
     courseList.push(...processedCourses);
-    console.log(`CoursesList compoment courseList is`)
     console.log(courseList)
-
-
-  })
+    // save token to store
+    store.updateToken(token)
+  }
   // get course detail
 const getDetail = async(id)=>{
   console.log(id)

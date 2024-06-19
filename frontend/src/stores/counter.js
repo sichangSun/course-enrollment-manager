@@ -9,7 +9,8 @@ export const useCounterStore = defineStore('counter', () => {
       studentEmail:''
     },
     studentCourses:[
-    ]
+    ],
+    csrftoken:''
   })
 
 
@@ -23,6 +24,11 @@ export const useCounterStore = defineStore('counter', () => {
     return studentState.value.studentCourses.find(course => course.CourseID === courseId);
   }
 
+  function updateToken(token) {
+    studentState.value.csrftoken = token;
+  }
 
-  return { studentState, updateStudentCourses,getCourseById }
+
+
+  return { studentState, updateStudentCourses,getCourseById,updateToken }
 })
