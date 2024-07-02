@@ -32,7 +32,8 @@ func New(conf *RouterConfig) *Router {
 		AllowOrigins:     []string{"http://localhost:5173"},
 		AllowCredentials: true,
 		AllowMethods:     []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
-		AllowHeaders:     []string{"Content-Type", "X-CSRF-Token", "Authorization"},
+		AllowHeaders:     []string{"Content-Type", "X-Csrf-Token", "X-CSRF-Token", "Authorization"},
+		ExposeHeaders:    []string{"X-CSRF-Token"},
 	}))
 	// e.Use(middleware.CSRF())
 
@@ -61,10 +62,12 @@ func New(conf *RouterConfig) *Router {
 		{
 			g2 := g.Group("")
 			g2.Use(echojwt.WithConfig(config))
+			g2.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
+				CookieSecure: false, //localhost
+				CookiePath:   "/api",
+			}))
 			{
 				g3 := g2.Group("/auth")
-				g3.Use(middleware.CSRF())
-				g3.Use(echojwt.WithConfig(config))
 				g3.PUT("/change-password", studentController.ChangePassword)
 				g3.GET("/courses", studentController.GetStudentCourses)
 				g3.POST("/course", studentController.RegisterCourse)
