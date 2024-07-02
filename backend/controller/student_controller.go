@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/sichangSun/course-enrollment-manager/domain/model"
 	"github.com/sichangSun/course-enrollment-manager/domain/repository"
 	"github.com/sichangSun/course-enrollment-manager/domain/service"
@@ -76,7 +77,7 @@ func (con *StudentController) ChangePassword(c echo.Context) error {
 	studentID, err := strconv.Atoi(claims.ID)
 	if err != nil {
 		c.Logger().Error(err.Error())
-		return c.NoContent(http.StatusBadRequest)
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 	params := struct {
 		OldPassword string `json:"oldpassword"`
@@ -84,7 +85,7 @@ func (con *StudentController) ChangePassword(c echo.Context) error {
 	}{}
 	if err := c.Bind(&params); err != nil {
 		c.Logger().Error(err.Error())
-		return c.NoContent(http.StatusBadRequest)
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 	in := &service.UpdatePasswordInput{
 		StudentID:   studentID,
@@ -118,6 +119,10 @@ func (con *StudentController) GetStudentCourses(c echo.Context) error {
 		c.Logger().Error(err.Error())
 		return c.NoContent(http.StatusBadRequest)
 	}
+	// Get CSRF Token from context
+	csrfToken := c.Get(middleware.DefaultCSRFConfig.ContextKey).(string)
+	c.Response().Header().Set("X-CSRF-Token", csrfToken)
+
 	out, err := con.StudentService.GetStudentCourses(ctx, studentID)
 	if err != nil {
 		if errors.Is(err, service.ErrNotFound) {
@@ -127,7 +132,10 @@ func (con *StudentController) GetStudentCourses(c echo.Context) error {
 		return c.NoContent(http.StatusInternalServerError)
 	}
 	courseList := StudentCourseControllerOutput{out.StudentCourses}
-	res := courseList
+	res := map[string]interface{}{
+		"courses": courseList,
+		// "csrfToken": csrfToken,
+	}
 
 	return c.JSON(http.StatusOK, res)
 
@@ -143,24 +151,24 @@ func (con *StudentController) RegisterCourse(c echo.Context) error {
 	studentID, err := strconv.Atoi(claims.ID)
 	if err != nil {
 		c.Logger().Error(err.Error())
-		return c.NoContent(http.StatusBadRequest)
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 	params := struct {
-		CourseID   string `json:"courseid"`
+		CourseID   int    `json:"courseid"`
 		CourseName string `json:"coursename"`
 	}{}
 	if err := c.Bind(&params); err != nil {
 		c.Logger().Error(err.Error())
 		return c.NoContent(http.StatusBadRequest)
 	}
-	couserID, err := strconv.Atoi(params.CourseID)
-	if err != nil {
-		c.Logger().Error(err.Error())
-		return c.NoContent(http.StatusBadRequest)
-	}
+	// couserID, err := strconv.Atoi(params.CourseID)
+	// if err != nil {
+	// 	c.Logger().Error(err.Error())
+	// 	return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	// }
 	in := service.RegisterCourseInput{
 		StudentID: studentID,
-		CourseID:  couserID,
+		CourseID:  params.CourseID,
 	}
 
 	err = con.StudentService.RegisterCourse(ctx, &in)
@@ -180,13 +188,13 @@ func (con *StudentController) UnRegisterCourse(c echo.Context) error {
 	studentID, err := strconv.Atoi(claims.ID)
 	if err != nil {
 		c.Logger().Error(err.Error())
-		return c.NoContent(http.StatusBadRequest)
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 	ID := c.Param("course_id")
 	courseID, err := strconv.Atoi(ID)
 	if err != nil {
 		c.Logger().Error(err.Error())
-		return c.NoContent(http.StatusBadRequest)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 	in := &service.UnRegisterCourseInput{
 		StudentID: studentID,

@@ -28,7 +28,13 @@ func New(conf *RouterConfig) *Router {
 
 	e.Use(middleware.Recover())
 	// e.Use(middleware.Gzip())
-	e.Use(middleware.CORS())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowCredentials: true,
+		AllowMethods:     []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
+		AllowHeaders:     []string{"Content-Type", "X-Csrf-Token", "X-CSRF-Token", "Authorization"},
+		ExposeHeaders:    []string{"X-CSRF-Token"},
+	}))
 	// e.Use(middleware.CSRF())
 
 	courseRepository := mysql.NewCourseRepository(conf.DB)
@@ -54,21 +60,28 @@ func New(conf *RouterConfig) *Router {
 			g1.POST("/login", studentController.Login)
 		}
 		{
-			g2 := g.Group("/auth")
-			g2.Use(middleware.CSRF())
+			g2 := g.Group("")
 			g2.Use(echojwt.WithConfig(config))
-			g2.PUT("/change-password", studentController.ChangePassword)
-			g2.GET("/courses", studentController.GetStudentCourses)
-			g2.POST("/course", studentController.RegisterCourse)
-			g2.DELETE("/course/:course_id", studentController.UnRegisterCourse)
+			g2.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
+				CookieSecure: false, //localhost
+				CookiePath:   "/api",
+			}))
+			{
+				g3 := g2.Group("/auth")
+				g3.PUT("/change-password", studentController.ChangePassword)
+				g3.GET("/courses", studentController.GetStudentCourses)
+				g3.POST("/course", studentController.RegisterCourse)
+				g3.DELETE("/course/:course_id", studentController.UnRegisterCourse)
+
+			}
+			{
+				g4 := g2.Group("/courses")
+				g4.GET("", courseController.GetAllCourses)
+				g4.GET("/:course_id", courseController.GetOneCourseDetail)
+			}
 
 		}
-		{
-			g3 := g.Group("/courses")
-			g3.Use(middleware.CSRF())
-			g3.GET("", courseController.GetAllCourses)
-			g3.GET("/:course_id", courseController.GetOneCourseDetail)
-		}
+
 	}
 
 	return &Router{e}

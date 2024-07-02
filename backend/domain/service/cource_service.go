@@ -46,7 +46,7 @@ func (cs *CourseService) GetAllCourses(ctx context.Context) (*GetAllCoursesOutpu
 			})
 		} else {
 			courseMap[detail.ID] = &model.CourseWithMulitSchedules{
-				ID:           detail.ID,
+				CourseID:     detail.ID,
 				CourseName:   detail.CourseName,
 				Semester:     detail.Semester,
 				InstructorID: detail.Instructor,
@@ -87,7 +87,7 @@ func (cs *CourseService) GetGetOneCourseDetail(ctx context.Context, courseID int
 		schedules = append(schedules, schedule)
 	}
 	courseDetail := &model.CourseWithMulitSchedules{
-		ID:           rows[0].ID,
+		CourseID:     rows[0].ID,
 		CourseName:   rows[0].CourseName,
 		Semester:     rows[0].Semester,
 		InstructorID: rows[0].Instructor,

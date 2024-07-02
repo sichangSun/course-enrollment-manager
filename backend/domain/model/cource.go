@@ -26,7 +26,7 @@ type CourseScheduleDetail struct {
 
 // Including associated teachers and mulit schedules.
 type CourseWithMulitSchedules struct {
-	ID           int
+	CourseID     int
 	CourseName   string
 	Semester     int
 	InstructorID int

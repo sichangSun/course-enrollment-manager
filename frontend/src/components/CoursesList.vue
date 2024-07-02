@@ -14,12 +14,13 @@
 
           <v-list-item-action
           :end="true" class="list-button">
-            <v-btn class="button-space" @click="$emit('getDetail',course.ID)">
+            <v-btn class="button-space" @click="$emit('getDetail',course.CourseID)">
               詳細
             </v-btn>
             <ConfirmBox
             :course="course"
-            :buttonColor="getButtonColor(course)">
+            :buttonColor="getButtonColor(course)"
+            @fetchdate="handleDataUpdated">
               <template v-slot:content>
                 {{ course.CourseName }}この授業{{ course.courseDisplay }}してよろしでしょうか？
               </template>
@@ -39,7 +40,11 @@ import ConfirmBox from  './ConfirmBox.vue'
 // import { useRouter } from 'vue-router';
 // const router=useRouter()
 const props=defineProps(['courseList','chooseFlg'])
-const emit=defineEmits(['registerCourse'])
+const emit=defineEmits(['fetchdateFromComfirm'])
+
+function handleDataUpdated() {
+  emit('fetchdateFromComfirm')
+}
 
 // const registerOrDelCourse = async(id,courseFlg)=>{
 //   if(courseFlg==1){
