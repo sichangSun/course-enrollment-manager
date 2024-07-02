@@ -61,12 +61,16 @@ onBeforeMount(fetchData)
     let res ={}
     try{
       const response = await axios.get(`${_BASE_URL_}api/auth/courses`)
-        console.log('Get courses successful');
+        console.log('Get courses successful')
         // console.log(response.data)
         if(response.data.message && response.data.message=='successful but 0 row'){
+          store.updateToken(response.headers['x-csrf-token'])
           return
         }
         res = response.data
+        //Save csrftoken
+        store.updateToken(response.headers['x-csrf-token'])
+        console.log('Save token successful')
     }catch(error){
       if(error.response){
       console.error('Get courses failed:', error.response.data)
@@ -94,8 +98,7 @@ onBeforeMount(fetchData)
           gridData[period][day].id = course.CourseID
       })
     })
-    //Save csrftoken
-    store.updateToken(res.csrfToken)
+    
   }
   function toChangePasswordPage(){
     router.push({

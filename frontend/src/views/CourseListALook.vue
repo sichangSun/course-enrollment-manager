@@ -4,13 +4,14 @@
   <CoursesList
     :courseList="courseList"
     @getDetail="getDetail"
+    @fetchdateFromComfirm="fetchData"
     >
   </CoursesList>
 </template>
 
 <script setup>
 
-  import { onBeforeMount, reactive, ref } from 'vue'
+  import { onBeforeMount, reactive, onUpdated,ref } from 'vue'
   import CoursesList from '../components/CoursesList.vue'
   import BackToStudentHome from '../components/BackToStudentHome.vue'
   import { useRouter } from 'vue-router'
@@ -26,31 +27,33 @@
   // })
 
   const courseList=reactive([])
-  const res=reactive([])
+  // const res=reactive([])
   onBeforeMount(fetchData)
-  // onBeforeUpdate(fetchData)
+  // onUpdated(fetchData)
 
   async function fetchData() {
-    // let res2={}
-    let token=''
+    let res=[]
+    if(courseList.length != 0){
+      console.log(courseList)
+      courseList.splice(0)
+      console.log(courseList)
+    }
     try{
       const response= await axios.get(`${_BASE_URL_}api/courses`)
-      // res2=response.data
-      // console.log(res2)
 
-      response.data.courseList.CourseList.forEach(course=> {
+      response.data.CourseList.forEach(course=> {
         res.push(course)
       })
-      token=response.data.csrfToken
+      console.log(response)
 
     }catch(error){
-      console.error('Get courses failed:', error.response.data)
       router.push({
         name: 'ErrorPage'
       })
+      console.error('Get courses failed:', error.response.data)
     }
     const processedCourses=res.map(course => {
-      const c = store.getCourseById(course.ID)
+      const c = store.getCourseById(course.CourseID)
       if(c){
         return { ...course, courseFlg: 1 ,courseDisplay:'削除'};
       }else{
@@ -59,8 +62,6 @@
     });
     courseList.push(...processedCourses);
     console.log(courseList)
-    // save token to store
-    store.updateToken(token)
   }
   // get course detail
 const getDetail = async(id)=>{
