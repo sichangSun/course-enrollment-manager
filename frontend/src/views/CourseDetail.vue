@@ -59,11 +59,12 @@ async function fetchData(){
   course.value=res
   console.log(course)
 
+  //Time display
   const days={1:'月曜日' , 2:'火曜日',  3:'水曜日',  4:'木曜日',  5:'金曜日'}
   const peridos={ 1:'一限', 2:'二限',  3:'三限',  4:'四限', 5:'五限' }
 
-  if(res.Schedules != 0){
-    res.Schedules.splice(0)
+  if(schedulesShow != 0){
+    schedulesShow.splice(0)
   }
   res.Schedules.forEach(trim=>{
     const day=days[trim.Period]

@@ -62,6 +62,8 @@ const registerCourse = async(id,name)=>{
   // console.log(id)
   // console.log(name)
   console.log(`registerCourse: ${id}${name}`)
+  //TODO: verify the save time can not register course
+
   //get csrf token
   const token=store.studentState.csrftoken
   try{
@@ -93,6 +95,11 @@ const registerCourse = async(id,name)=>{
     dialog.value = false
 
   }
+}
+//scheduls validation
+function schedulsValidate(id){
+  console.log(id)
+
 }
 
 //Get registered course information
