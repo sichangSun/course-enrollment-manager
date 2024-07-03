@@ -87,8 +87,17 @@ docker compose up backend -d
 
 ### 4. アプリケーションへのアクセス
 ブラウザを開いて以下のURLにアクセスします。<br>
-http://localhost:5173/<br><br>
+http://localhost:5173/<br>
+user:<br>
+```
+suzuki@scon.com
 
+```
+password:<br>
+```
+KRhjh439jsc
+
+```
 
 ## 問題点＆これから解決ポイント
 ### ローカル
