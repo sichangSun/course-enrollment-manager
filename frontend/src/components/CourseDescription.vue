@@ -47,7 +47,7 @@
       <ConfirmBox
       :course="course"
       :buttonColor="getButtonColor(course)"
-      >
+      @fetchdate="handleDataUpdated">
         <template v-slot:content>
           {{ course.CourseName }}この授業{{ course.courseDisplay }}してよろしでしょうか？
         </template>
@@ -62,13 +62,16 @@ import { onMounted, reactive, ref } from 'vue'
 import ConfirmBox from  './ConfirmBox.vue'
 
 const props=defineProps(['course','schedulesShow'])
+const emit=defineEmits(['fetchdateFromComfirm'])
 
-
-const getButtonColor = (course) => {
-    return course.courseFlg === 1 ? 'red' : 'primary'
+function handleDataUpdated() {
+  emit('fetchdateFromComfirm')
 }
 
 
+const getButtonColor = (course) => {
+  return course.courseFlg === 1 ? 'red' : 'primary'
+}
 
 
 </script>

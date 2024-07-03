@@ -34,9 +34,7 @@
   async function fetchData() {
     let res=[]
     if(courseList.length != 0){
-      console.log(courseList)
       courseList.splice(0)
-      console.log(courseList)
     }
     try{
       const response= await axios.get(`${_BASE_URL_}api/courses`)
@@ -66,6 +64,13 @@
   // get course detail
 const getDetail = async(id)=>{
   console.log(id)
+  router.push({
+    name:'CourseDetail',
+    params: {
+    courseId: id
+  }
+  })
+
 }
 
 

@@ -3,11 +3,12 @@
 <BackToStudentHome/>
   <CourseDescription
   :course="course"
-  :schedulesShow="schedulesShow"/>
+  :schedulesShow="schedulesShow"
+  @fetchdateFromComfirm="fetchData"/>
 </template>
 
 <script setup>
-import { reactive, ref,watchEffect } from 'vue'
+import { reactive, ref,watchEffect,onBeforeMount } from 'vue'
 import CourseDescription from '../components/CourseDescription.vue'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
@@ -23,7 +24,9 @@ const route =useRoute()
 let course=ref({})
 let schedulesShow=reactive([])
 
-watchEffect(async () => {
+onBeforeMount(fetchData)
+
+async function fetchData(){
   const courseId = route.params.courseId
   console.log(courseId)
   let res ={}
@@ -59,6 +62,9 @@ watchEffect(async () => {
   const days={1:'月曜日' , 2:'火曜日',  3:'水曜日',  4:'木曜日',  5:'金曜日'}
   const peridos={ 1:'一限', 2:'二限',  3:'三限',  4:'四限', 5:'五限' }
 
+  if(res.Schedules != 0){
+    res.Schedules.splice(0)
+  }
   res.Schedules.forEach(trim=>{
     const day=days[trim.Period]
     const perido=peridos[trim.DayOfWeek]
@@ -66,7 +72,7 @@ watchEffect(async () => {
     schedulesShow.push(schedule)
   })
 
-})
+}
 
 </script>
 <style>
