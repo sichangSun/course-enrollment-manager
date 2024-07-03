@@ -62,6 +62,8 @@ const registerCourse = async(id,name)=>{
   // console.log(id)
   // console.log(name)
   console.log(`registerCourse: ${id}${name}`)
+  //TODO: verify the save time can not register course
+
   //get csrf token
   const token=store.studentState.csrftoken
   try{
@@ -73,7 +75,7 @@ const registerCourse = async(id,name)=>{
     console.log(response)
 
     // sucessful
-    if(response.data.message){
+    if(response.data.message && response.data.message=='successful'){
       console.log('Register successful')
       const c=store.getCourseById(id)
       if(!c){
@@ -93,6 +95,11 @@ const registerCourse = async(id,name)=>{
     dialog.value = false
 
   }
+}
+//scheduls validation
+function schedulsValidate(id){
+  console.log(id)
+
 }
 
 //Get registered course information
@@ -114,20 +121,26 @@ const searchCourse =async(id)=>{
   return res2
 }
 
-//deleteCourse
+//DeleteCourse
 const deleteCourse = async(id)=>{
-  console.log(id)
-  console.log('deleteCourse')
+  console.log(`deleteCourse:${id}`)
+   //get csrf token
   const token=store.studentState.csrftoken
   try{
-    await axios.delete(`${_BASE_URL_}api/auth/course/${id}`,{
+    const response=await axios.delete(`${_BASE_URL_}api/auth/course/${id}`,{
       headers: {
         'X-CSRF-Token': token
       }
     })
-  .then(response=>console.log('Delete successful'))
+    if(response.data.message && response.data.message=='successful'){
+      console.log('Delete successful')
+      store.deleteCourseFromStore(id)
+      dialog.value = false
+      alert(`削除ができました。`)
+      emit('fetchdate')
+    }
   }catch(error){
-    console.error('Register failed:', error.response.data)
+    console.error('Delete failed:', error.response.data)
     alert(`${name}削除が失敗しました。もう一回お試しください。`)
     dialog.value = false
   }

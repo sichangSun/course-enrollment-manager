@@ -27,8 +27,14 @@ export const useCounterStore = defineStore('counter', () => {
   function updateToken(token) {
     studentState.value.csrftoken = token;
   }
+  function deleteCourseFromStore(courseId) {
+    const index = studentState.value.studentCourses.findIndex(course => course.CourseID === courseId);
+    if (index !== -1) {
+      studentState.value.studentCourses.splice(index, 1);
+    }
+  }
 
 
 
-  return { studentState, updateStudentCourses,getCourseById,updateToken }
+  return { studentState, updateStudentCourses,getCourseById,updateToken,deleteCourseFromStore }
 })

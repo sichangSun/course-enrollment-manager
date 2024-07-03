@@ -33,7 +33,8 @@ func (r *CourseRepository) GetAllCourses(ctx context.Context) ([]*model.CourseSc
 		cs.period
 	FROM courses c
 	JOIN teachers t ON c.instructor = t.id
-	JOIN course_schedules cs ON c.id = cs.course_id;`
+	JOIN course_schedules cs ON c.id = cs.course_id
+	ORDER BY c.id ASC;`
 
 	var courses []*model.CourseScheduleDetail
 	if err := r.db.Select(&courses, query); err != nil {
